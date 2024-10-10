@@ -1,1 +1,2 @@
-# Roach-Hunter---Projeto-escolar
+# frunt_ninja_py
+ fruit ninja game using python
