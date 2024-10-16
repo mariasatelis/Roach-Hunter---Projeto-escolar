@@ -81,7 +81,7 @@ def draw_lives(display, x, y, lives, image) :
 # show game over display & front display
 def show_gameover_screen():
     gameDisplay.blit(background, (0,0))
-    draw_text(gameDisplay, "Roach Hunter!", 50, WIDTH / 2, HEIGHT / 4)
+    draw_text(gameDisplay, "Roach Hunter", 50, WIDTH / 2, HEIGHT / 4)
     if not game_over :
         draw_text(gameDisplay,"Score : " + str(score), 50, WIDTH / 2, HEIGHT /2)
 
