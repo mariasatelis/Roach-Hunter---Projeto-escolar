@@ -13,7 +13,7 @@ HEIGHT = 500
 FPS = 12
 
 pygame.init()
-pygame.display.set_caption('Fruit-Ninja')
+pygame.display.set_caption('Roach Hunter')
 gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
