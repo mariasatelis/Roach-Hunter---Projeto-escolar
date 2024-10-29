@@ -173,5 +173,3 @@ while game_running:
     clock.tick(FPS)
 
 pygame.quit()
-
-
