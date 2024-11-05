@@ -4,68 +4,75 @@ import random
 
 player_lives = 3
 score = 0
-fruits = ['barata','barataa','barataaa','barataaaa','barataaaaa', 'bomb']
+fruits = ['barata', 'barataa', 'barataaa', 'barataaaa', 'barataaaaa', 'bomb']
 
-# initialize pygame and create window
-
+# Initialize pygame and create window
 WIDTH = 1000
 HEIGHT = 500
 FPS = 12
 
 pygame.init()
+pygame.mixer.init()  # Initialize the mixer
+pygame.mixer.music.load('musica/comedy.mp3')  # Load background music
+pygame.mixer.music.set_volume(0.5)            # Set background music volume to 50%
+pygame.mixer.music.play(-1)                   # Play background music in loop
+
+# Load the hit sound effect
+hit_sound = pygame.mixer.Sound('musica/msc.mp3')  # Sound for when the cockroach is hit
+hit_sound.set_volume(1.0)  # Set hit sound volume to 100%
+
 pygame.display.set_caption('Roach Hunter')
 gameDisplay = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
 # Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
-WHITE = (255,255,255) 
-BLACK = (0,0,0) 
-RED = (255,0,0) 
-GREEN = (0,255,0) 
-BLUE = (0,0,255)
+background = pygame.image.load('./img/bgk.png')  # Game background
+font = pygame.font.Font(os.path.join(os.getcwd(), './fonts/DMSerifText-Regular.ttf'), 42)  # Font for score
+score_text = font.render('Score : ' + str(score), True, WHITE)  # Initial score display
+lives_icon = pygame.image.load('./img/w_h.png')  # Icon for lives
 
-background = pygame.image.load('./img/bgk.png')                                  # game background
-font = pygame.font.Font(os.path.join(os.getcwd(), './fonts/DMSerifText-Regular.ttf'), 42)  # Font PDBI for scores
-score_text = font.render('Score : ' + str(score), True, WHITE)                # score display
-lives_icon = pygame.image.load('./img/w_h.png')                               # images that show remaining lives
+# Variable to track mute status
+mute = False
 
-# Generalized structure of the fruit Dictionary
+# Function to generate random fruit data
 def generate_random_fruits(fruit):
     fruit_path = "img/" + fruit + ".png"
     data[fruit] = {
         'img': pygame.image.load(fruit_path),
-        'x' : random.randint(100,500),
-        'y' : 800,
-        'speed_x': random.randint(-10,10),
+        'x': random.randint(100, 500),
+        'y': 800,
+        'speed_x': random.randint(-10, 10),
         'speed_y': random.randint(-80, -60),
         'throw': False,
         't': 0,
         'hit': False,
     }
+    data[fruit]['throw'] = random.random() >= 0.75
 
-    if random.random() >= 0.75:
-        data[fruit]['throw'] = True
-    else:
-        data[fruit]['throw'] = False
-
-# Dictionary to hold the data for random fruit generation
+# Initialize fruit data
 data = {}
 for fruit in fruits:
     generate_random_fruits(fruit)
 
+# Function to hide a cross representing lost lives
 def hide_cross_lives(x, y):
     gameDisplay.blit(pygame.image.load("./img/r_h.png"), (x, y))
 
-# Generic method to draw fonts on the screen
+# Function to draw text on the screen
 def draw_text(display, text, size, x, y):
-    font = pygame.font.Font(os.path.join(os.getcwd(), './fonts/DMSerifText-Regular.ttf'), size)  # Font PDBI
+    font = pygame.font.Font(os.path.join(os.getcwd(), './fonts/DMSerifText-Regular.ttf'), size)
     text_surface = font.render(text, True, WHITE)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     display.blit(text_surface, text_rect)
 
-# Draw player's lives
+# Function to draw player's lives
 def draw_lives(display, x, y, lives, image):
     for i in range(lives):
         img = pygame.image.load(image)
@@ -74,13 +81,12 @@ def draw_lives(display, x, y, lives, image):
         img_rect.y = y
         display.blit(img, img_rect)
 
-# Show game over display & front display
+# Game over screen
 def show_gameover_screen():
     gameDisplay.blit(background, (0, 0))
     draw_text(gameDisplay, "Roach Hunter", 95, WIDTH / 2, HEIGHT / 4)
     if not game_over:
         draw_text(gameDisplay, "Score : " + str(score), 50, WIDTH / 2, HEIGHT / 2)
-
     draw_text(gameDisplay, "Aperte qualquer tecla para iniciar!", 23, WIDTH / 2, HEIGHT * 3 / 4)
     pygame.display.flip()
     waiting = True
@@ -109,17 +115,24 @@ while game_running:
         score = 0
 
     for event in pygame.event.get():
-        # Checking for closing window
+        # Check for window close
         if event.type == pygame.QUIT:
             game_running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:  # Toggle pause
                 paused = not paused
+            elif event.key == pygame.K_m:  # Toggle mute
+                mute = not mute
+                if mute:
+                    pygame.mixer.music.set_volume(0)  # Mute background music
+                    hit_sound.set_volume(0)           # Mute hit sound
+                else:
+                    pygame.mixer.music.set_volume(0.3)  # Restore background music volume
+                    hit_sound.set_volume(1.0)           # Restore hit sound volume
 
     if paused:
-        # Show pause message
         draw_text(gameDisplay, "PAUSE", 80, WIDTH / 2, HEIGHT / 4)
-        draw_text(gameDisplay, "Aperte a 'P' para continuar", 30, WIDTH / 2, HEIGHT / 2)
+        draw_text(gameDisplay, "Pressione 'P' para continuar", 30, WIDTH / 2, HEIGHT / 2)
         pygame.display.update()
         continue  # Skip game logic while paused
 
@@ -141,6 +154,7 @@ while game_running:
 
             current_position = pygame.mouse.get_pos()
 
+            # Check if the cockroach is "hit"
             if not value['hit'] and current_position[0] > value['x'] and current_position[0] < value['x'] + 60 \
                     and current_position[1] > value['y'] and current_position[1] < value['y'] + 60:
                 if key == 'bomb':
@@ -159,12 +173,14 @@ while game_running:
                     half_fruit_path = "./img/ex.png"
                 else:
                     half_fruit_path = "img/" + "h_" + key + ".png"
+                    if not mute:
+                        hit_sound.play()  # Play hit sound only if not muted
 
                 value['img'] = pygame.image.load(half_fruit_path)
                 value['speed_x'] += 10
                 if key != 'bomb':
                     score += 1
-                score_text = font.render('Score : ' + str(score), True, WHITE)  # Update score display using PDBI font
+                score_text = font.render('Score : ' + str(score), True, WHITE)
                 value['hit'] = True
         else:
             generate_random_fruits(key)
