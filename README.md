@@ -1,5 +1,5 @@
 # Roach Hunter - Game
-Roach Hunter é um jogo desenvolvido como parte de um projeto escolar para a conclusão do curso de Análise e Desenvolvimento de Software. O jogo foi criado utilizando a biblioteca Pygame em Python. O objetivo é capturar o máximo de "baratas" possível, evitando as bombas, para acumular pontos.
+Roach Hunter é um jogo desenvolvido como parte de um projeto escolar para a conclusão do curso de Análise e Desenvolvimento de Software. O jogo foi criado utilizando a biblioteca Pygame em Python. O objetivo é capturar o máximo de "baratas" possível, evitando as borboletas, para acumular pontos.
 
 # Descrição do Projeto
 Neste jogo, o jogador precisa clicar nas baratas que aparecem aleatoriamente na tela antes que elas desapareçam. Há também borboletas que, ao serem clicadas, diminuem as vidas do jogador. O jogo termina quando todas as vidas são perdidas, e o placar final é exibido.
