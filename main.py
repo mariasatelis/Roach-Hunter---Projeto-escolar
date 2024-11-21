@@ -4,7 +4,7 @@ import random
 
 player_lives = 3
 score = 0
-fruits = ['barata', 'barataa', 'barataaa', 'barataaaa', 'barataaaaa', 'bomb']
+baratas = ['barata', 'barataa', 'barataaa', 'barataaaa', 'barataaaaa', 'bomb']
 
 # Initialize pygame and create window
 WIDTH = 1000
@@ -40,11 +40,11 @@ lives_icon = pygame.image.load('./img/w_h.png')  # Icon for lives
 # Variable to track mute status
 mute = False
 
-# Function to generate random fruit data
-def generate_random_fruits(fruit):
-    fruit_path = "img/" + fruit + ".png"
-    data[fruit] = {
-        'img': pygame.image.load(fruit_path),
+# Function to generate random barata data
+def generate_random_baratas(barata):
+    barata_path = "img/" + barata + ".png"
+    data[barata] = {
+        'img': pygame.image.load(barata_path),
         'x': random.randint(100, 500),
         'y': 800,
         'speed_x': random.randint(-10, 10),
@@ -53,12 +53,12 @@ def generate_random_fruits(fruit):
         't': 0,
         'hit': False,
     }
-    data[fruit]['throw'] = random.random() >= 0.75
+    data[barata]['throw'] = random.random() >= 0.75
 
-# Initialize fruit data
+# Initialize barata data
 data = {}
-for fruit in fruits:
-    generate_random_fruits(fruit)
+for barata in baratas:
+    generate_random_baratas(barata)
 
 # Function to hide a cross representing lost lives
 def hide_cross_lives(x, y):
@@ -150,7 +150,7 @@ while game_running:
             if value['y'] <= 800:
                 gameDisplay.blit(value['img'], (value['x'], value['y']))
             else:
-                generate_random_fruits(key)
+                generate_random_baratas(key)
 
             current_position = pygame.mouse.get_pos()
 
@@ -170,20 +170,20 @@ while game_running:
                         show_gameover_screen()
                         game_over = True
 
-                    half_fruit_path = "./img/ex.png"
+                    half_barata_path = "./img/ex.png"
                 else:
-                    half_fruit_path = "img/" + "h_" + key + ".png"
+                    half_barata_path = "img/" + "h_" + key + ".png"
                     if not mute:
                         hit_sound.play()  # Play hit sound only if not muted
 
-                value['img'] = pygame.image.load(half_fruit_path)
+                value['img'] = pygame.image.load(half_barata_path)
                 value['speed_x'] += 10
                 if key != 'bomb':
                     score += 1
                 score_text = font.render('Score : ' + str(score), True, WHITE)
                 value['hit'] = True
         else:
-            generate_random_fruits(key)
+            generate_random_baratas(key)
 
     pygame.display.update()
     clock.tick(FPS)
